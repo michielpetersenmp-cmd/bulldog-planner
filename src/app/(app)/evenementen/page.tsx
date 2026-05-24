@@ -6,7 +6,7 @@ import { MapPin, Clock, Calendar } from "lucide-react";
 export const revalidate = 300;
 
 async function getEvenementen(): Promise<Evenement[]> {
-  const supabase = createServerSupabaseClient();
+ const supabase = createClient();
   const { data } = await supabase
     .from("planner_evenementen")
     .select("*")
