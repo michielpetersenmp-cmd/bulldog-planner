@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #1a2e5a;
+  --color-accent: #F5C842;
+  --color-bg: #f7f5f0;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background-color: var(--color-bg);
+    overscroll-behavior: none;
+    /* Safe area voor iPhone notch */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-primary font-bold px-5 py-3 rounded-2xl transition-all duration-200 active:scale-95;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-white text-primary font-semibold px-5 py-3 rounded-2xl border-2 border-primary/15 hover:border-primary/30 transition-all duration-200 active:scale-95;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-card p-5;
+  }
+}
+
+/* Bottom nav safe area */
+.bottom-nav {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+/* Agenda grid */
+.agenda-grid {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: 0;
+}
+
+/* Smooth scroll op iOS */
+.scroll-smooth {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* PWA install prompt animatie */
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}

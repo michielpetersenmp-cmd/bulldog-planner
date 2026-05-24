@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarDays, Star, Bell, User, Camera } from "lucide-react";
+import { CalendarDays, Star, Bell, User } from "lucide-react";
 
 const navItems = [
   { href: "/agenda", label: "Agenda", icon: CalendarDays },
-  { href: "/evenementen", label: "Events", icon: Star },
-  { href: "/fotos", label: "Foto's", icon: Camera },
+  { href: "/evenementen", label: "Evenementen", icon: Star },
   { href: "/notificaties", label: "Meldingen", icon: Bell },
   { href: "/profiel", label: "Profiel", icon: User },
 ];
@@ -24,12 +23,18 @@ export default function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center gap-0.5 py-2.5 px-2 transition-all duration-200 ${
-                active ? "text-primary" : "text-gray-400"
+              className={`flex flex-col items-center gap-1 py-3 px-4 transition-all duration-200 ${
+                active ? "text-primary" : "text-gray-400 hover:text-gray-600"
               }`}
             >
-              <div className={`p-1.5 rounded-xl transition-all ${active ? "bg-accent/20" : ""}`}>
-                <item.icon size={20} strokeWidth={active ? 2.5 : 1.8} />
+              <div className={`p-1.5 rounded-xl transition-all ${
+                active ? "bg-accent/20" : ""
+              }`}>
+                <item.icon
+                  size={22}
+                  strokeWidth={active ? 2.5 : 1.8}
+                  className={active ? "text-primary" : ""}
+                />
               </div>
               <span className={`text-xs font-medium ${active ? "text-primary" : ""}`}>
                 {item.label}
