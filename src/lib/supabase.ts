@@ -1,8 +1,5 @@
-import { createBrowserClient } from "@supabase/ssr";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { createBrowserClient } from "@supabase/supabase-js";
 
-// Browser client (gebruik in client components)
 export function createClient() {
   return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -10,33 +7,6 @@ export function createClient() {
   );
 }
 
-// Server client (gebruik in server components & API routes)
-export function createServerSupabaseClient() {
-  const cookieStore = cookies();
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          try {
-            cookieStore.set({ name, value, ...options });
-          } catch {}
-        },
-        remove(name: string, options: CookieOptions) {
-          try {
-            cookieStore.set({ name, value: "", ...options });
-          } catch {}
-        },
-      },
-    }
-  );
-}
-
-// Types
 export type AgendaItem = {
   id: string;
   gebruiker_id: string;
@@ -83,36 +53,6 @@ export type Profiel = {
   push_enabled: boolean;
 };
 
-// Agenda helpers
-export async function getAgendaItems(maand: number, jaar: number) {
-  const client = createClient();
-  const startDatum = `${jaar}-${String(maand).padStart(2, "0")}-01`;
-  const eindDatum = new Date(jaar, maand, 0).toISOString().split("T")[0];
-
-  const { data, error } = await client
-    .from("agenda_items")
-    .select("*")
-    .gte("datum", startDatum)
-    .lte("datum", eindDatum)
-    .order("datum", { ascending: true });
-
-  if (error) throw error;
-  return data as AgendaItem[];
-}
-
-export async function getEvenementen() {
-  const client = createClient();
-  const { data, error } = await client
-    .from("planner_evenementen")
-    .select("*")
-    .eq("published", true)
-    .gte("datum", new Date().toISOString().split("T")[0])
-    .order("datum", { ascending: true });
-
-  if (error) throw error;
-  return data as Evenement[];
-}
-
 export function formatDatum(datum: string) {
   return new Date(datum).toLocaleDateString("nl-NL", {
     weekday: "long",
@@ -127,7 +67,6 @@ export function formatTijd(tijd: string | null) {
   return tijd.substring(0, 5);
 }
 
-// Agenda item type iconen
 export const typeIcoon: Record<string, string> = {
   persoonlijk: "📅",
   dierenarts: "🏥",
