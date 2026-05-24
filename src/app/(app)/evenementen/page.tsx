@@ -1,4 +1,5 @@
-import { createServerSupabaseClient, formatDatum, formatTijd } from "@/lib/supabase";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { formatDatum, formatTijd } from "@/lib/supabase";
 import type { Evenement } from "@/lib/supabase";
 import { MapPin, Clock, Calendar } from "lucide-react";
 
