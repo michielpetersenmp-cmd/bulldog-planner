@@ -1,3 +1,4 @@
+"use client";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { formatDatum, formatTijd } from "@/lib/supabase";
 import type { Evenement } from "@/lib/supabase";
