@@ -24,12 +24,6 @@ function addDays(date: string, days: number) {
   return d.toISOString().slice(0, 10);
 }
 
-function hourOf(time: string | null) {
-  if (!time) return 9;
-  const h = Number(time.slice(0, 2));
-  return Number.isFinite(h) ? h : 9;
-}
-
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
   const auth = request.headers.get("authorization");
@@ -71,7 +65,7 @@ export async function GET(request: Request) {
   for (const ev of events || []) {
     const reminders: { type: "dag_ervoor" | "start" | "deadline"; title: string; body: string }[] = [];
 
-    if (ev.herinnering_dag_ervoor && ev.datum === tomorrow && now.hour === 9) {
+    if (ev.herinnering_dag_ervoor && ev.datum === tomorrow) {
       reminders.push({
         type: "dag_ervoor",
         title: `Morgen: ${ev.titel}`,
@@ -79,7 +73,7 @@ export async function GET(request: Request) {
       });
     }
 
-    if (ev.herinnering_bij_start && ev.datum === now.date && now.hour === hourOf(ev.tijd_start)) {
+    if (ev.herinnering_bij_start && ev.datum === now.date) {
       reminders.push({
         type: "start",
         title: `Vandaag: ${ev.titel}`,
@@ -87,7 +81,7 @@ export async function GET(request: Request) {
       });
     }
 
-    if (ev.herinnering_deadline && ev.deadline_datum === now.date && now.hour === hourOf(ev.deadline_tijd)) {
+    if (ev.herinnering_deadline && ev.deadline_datum === now.date) {
       reminders.push({
         type: "deadline",
         title: `Laatste kans: ${ev.titel}`,
