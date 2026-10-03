@@ -64,14 +64,24 @@ export default function NotificatiesPage() {
     });
 
     const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
     const subJson = subscription.toJSON();
-    await supabase.from("push_subscriptions").upsert({
+    const { error } = await supabase.from("push_subscriptions").upsert({
+      gebruiker_id: user.id,
       endpoint: subJson.endpoint,
       p256dh: subJson.keys?.p256dh,
       auth: subJson.keys?.auth,
       user_agent: navigator.userAgent,
-    });
+    }, { onConflict: "gebruiker_id,endpoint" });
 
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    await supabase.from("planner_profielen").update({ push_enabled: true }).eq("id", user.id);
     setPushEnabled(true);
   }
 
@@ -131,7 +141,7 @@ export default function NotificatiesPage() {
             <div className="flex-1">
               <p className="font-semibold text-primary text-sm">Meldingen inschakelen</p>
               <p className="text-gray-600 text-xs mt-0.5">
-                Ontvang meldingen bij nieuwe blogs en evenementen.
+                Ontvang herinneringen voor loterijen, veilingen, acties en evenementen, inclusief de laatste dag om mee te doen.
               </p>
             </div>
             <button onClick={enablePush} className="btn-primary text-xs px-3 py-2 shrink-0">
