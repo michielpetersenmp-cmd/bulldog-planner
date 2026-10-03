@@ -7,8 +7,30 @@ import { createClient } from "@/lib/supabase";
 export default function LoginPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
   const supabase = createClient();
+
+  async function loginMetEmail(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setLoading("email");
+    setError("");
+    setMessage("");
+    const { error } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    if (error) {
+      setError(error.message);
+    } else {
+      setMessage("We hebben een inloglink naar je e-mailadres gestuurd.");
+    }
+    setLoading(null);
+  }
 
   async function loginMetGoogle() {
     setLoading("google");
@@ -80,6 +102,39 @@ export default function LoginPage() {
               {error}
             </div>
           )}
+
+          {message && (
+            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm text-center">
+              {message}
+            </div>
+          )}
+
+          <form onSubmit={loginMetEmail} className="space-y-3 mb-5">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1">E-mailadres</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="jij@voorbeeld.nl"
+                className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-2xl outline-none focus:border-primary text-base"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading !== null}
+              className="w-full px-4 py-3.5 bg-primary text-white rounded-2xl font-semibold disabled:opacity-60"
+            >
+              {loading === "email" ? "Versturen..." : "Stuur mij een inloglink"}
+            </button>
+          </form>
+
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-px bg-gray-100 flex-1" />
+            <span className="text-xs text-gray-400">of</span>
+            <div className="h-px bg-gray-100 flex-1" />
+          </div>
 
           <div className="space-y-3">
             {/* Google */}
