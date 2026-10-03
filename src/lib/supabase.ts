@@ -14,8 +14,6 @@ export type AgendaItem = {
   datum: string;
   tijd_start: string | null;
   tijd_eind: string | null;
-  deadline_datum: string | null;
-  deadline_tijd: string | null;
   locatie: string | null;
   type: string;
   kleur: string;
@@ -32,6 +30,8 @@ export type Evenement = {
   datum: string;
   tijd_start: string | null;
   tijd_eind: string | null;
+  deadline_datum: string | null;
+  deadline_tijd: string | null;
   locatie: string | null;
   locatie_url: string | null;
   type: string;
