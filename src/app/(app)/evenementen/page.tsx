@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient, formatDatum, formatTijd } from "@/lib/supabase";
 import type { Evenement } from "@/lib/supabase";
-import { MapPin, Clock, Calendar } from "lucide-react";
+import { MapPin, Clock, Calendar, Bell, ExternalLink } from "lucide-react";
 
 const typeIcoon: Record<string, string> = {
   evenement: "🎪",
@@ -83,6 +83,25 @@ export default function EvenementenPage() {
                   </div>
                   {ev.beschrijving && (
                     <p className="text-sm text-gray-600 mt-2">{ev.beschrijving}</p>
+                  )}
+                  {ev.deadline_datum && (
+                    <div className="mt-3 rounded-xl bg-accent/10 px-3 py-2 text-xs text-primary">
+                      <div className="flex items-center gap-1.5 font-semibold">
+                        <Bell size={12} />
+                        Laatste dag om mee te doen: {formatDatum(ev.deadline_datum)}
+                        {ev.deadline_tijd ? ` om ${formatTijd(ev.deadline_tijd)}` : ""}
+                      </div>
+                    </div>
+                  )}
+                  {ev.inschrijving_url && (
+                    <a
+                      href={ev.inschrijving_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary underline"
+                    >
+                      Meedoen / meer informatie <ExternalLink size={13} />
+                    </a>
                   )}
                 </div>
               </div>
